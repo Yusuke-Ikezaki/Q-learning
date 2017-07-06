@@ -1,19 +1,13 @@
 public class Environment{
   /* reward */
-  private int[][] r = {{-10, 2},
-                       {-10, 2},
-                       {-10, 2},
-                       {100, 2}};
+  /* r[state][action] */
+  private int[][] r;
   /* transition probability */
-  private double[][] p = {{0.8, 1.0},
-                          {0.5, 1.0},
-                          {0.8, 1.0},
-                          {1.0, 1.0}};
+  /* p[state][action] */
+  private double[][] p;
   /* next state */
-  private int[][] t = {{1, 0},
-                       {2, 0},
-                       {3, 1},
-                       {3, 2}};
+  /* t[state][action] */
+  private int[][] t;
 
   /* observe reward */
   public int observe_reward(int state, int action){

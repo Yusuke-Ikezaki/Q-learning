@@ -1,22 +1,28 @@
-public class Agent{
+public abstract class Agent{
   /* environment */
   private Environment env;
   /* discount rate */
-  private static final double GAMMA = 0.9;
+  private double gamma;
   /* learning rate */
-  private static final double ALPHA = 0.1;
-  /* number of search */
-  private static final int TMAX = 1000000;
+  private double alpha;
+  /* number of learning */
+  private int epoc;
+  /* number of action */
+  private int tmax;
   /* Q value */
-  private double[][] Q = {{0.0, 0.0},
-                          {0.0, 0.0},
-                          {0.0, 0.0},
-                          {0.0, 0.0}};
+  private double[][] Q; // Q[state][action]
 
   /* constructor */
-  public Agent(Environment env){
-    /* set envirionment */
+  public Agent(Environment env, double gamma, double alpha, int epoc, int tmax){
+    /* set envirionment, parameters and initialize Q value */
     this.env = env;
+    this.gamma = gamma;
+    this.alpha = alpha;
+    this.epoc = epoc;
+    this.tmax = tmax;
+    for(int i = 0; i < env.s_num; i++)
+      for(int j = 0; j < env.a_num; j++)
+        Q[i][j] = 0.0;
   }
 
   /* learning agent */
@@ -26,7 +32,7 @@ public class Agent{
     /* act until TMAX */
     for(int t = 0; t < TMAX; t++){
       /* choose action */
-      int action = select_action();
+      int action = choose_action();
       /* observe next state */
       int next_state = env.observe_state(state, action);
       /* observe reward */
@@ -35,13 +41,13 @@ public class Agent{
       double next_Q_max = max(Q[next_state]);
       /* update Q value */
       Q[state][action] = 
-        (1 -ALPHA) * Q[state][action] + ALPHA * (reward + GAMMA * next_Q_max);
+        (1 -alpha) * Q[state][action] + alpha * (reward + gamma * next_Q_max);
       /* transition to next state */
       state = next_state;
     }
   }
   /* choose action by epsilon-greedy method */
-  private int select_action(){
+  private int choose_action(){
     /* return 0 or 1 */
     return new java.util.Random().nextInt(2);
   }
