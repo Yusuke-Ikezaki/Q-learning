@@ -1,13 +1,18 @@
 public class Environment{
   /* reward */
-  /* r[state][action] */
-  private int[][] r;
+  private int[][] r; // r[state][action]
   /* transition probability */
-  /* p[state][action] */
-  private double[][] p;
+  private double[][] p; // p[state][action]
   /* next state */
-  /* t[state][action] */
-  private int[][] t;
+  private int[][] t; // t[state][action]
+  /* number of state */
+  private int s_num;
+  /* number of action */
+  private int a_num;
+
+  /* constructor */
+  public Environment(int[][] r){
+  }
 
   /* observe reward */
   public int observe_reward(int state, int action){
@@ -15,10 +20,11 @@ public class Environment{
   }
   /* observe next state */
   public int observe_state(int state, int action){
+    /* random number between 0.0 and 1.0 */
     double rand = Math.random();
-    /* policy 1 */
+    /* success act */
     if(rand < p[state][action]) return t[state][action];
-    /* policy 2 */
-    else return state;
+    /* failure act */
+    else return t[state][new java.util.Random().nextInt(a_num)];
   }
 }
