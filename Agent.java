@@ -33,7 +33,8 @@ public abstract class Agent{
       /* act until TMAX */
       for(int t = 0; t < tmax; t++){
         /* choose action */
-        int action = choose_action();
+        int[] actions = observe_action(state);
+        int action = choose_action(actions);
         /* observe next state */
         int next_state = env.observe_state(state, action);
         /* observe reward */
@@ -50,14 +51,14 @@ public abstract class Agent{
   }
   /* initialize Q value */
   private void init_Q(){
-    for(int i = 0; i < env.s_num; i++)
-      for(int j = 0; j < env.a_num; j++)
+    for(int i = 0; i < env.getS_num(); i++)
+      for(int j = 0; j < env.getA_num(); j++)
         Q[i][j] = 0.0;
   }
   /* choose action by epsilon-greedy method */
-  private int choose_action(){
-    /* return 0 or 1 */
-    return new java.util.Random().nextInt(2);
+  private int choose_action(int[] actions){
+    int action_index = new java.util.Random().nextInt(actions.length);
+    return actions[action_index];
   }
   /* test agent */
   public void test(){

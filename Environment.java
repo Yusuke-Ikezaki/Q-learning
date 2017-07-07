@@ -14,6 +14,10 @@ public class Environment{
   public Environment(int[][] r){
   }
 
+  /* observe action */
+  public int[] observe_action(int state){
+    return r[state];
+  }
   /* observe reward */
   public int observe_reward(int state, int action){
     return r[state][action];
