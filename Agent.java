@@ -1,39 +1,32 @@
-public abstract class Agent{
+public class Agent{
   /* environment */
   private Environment env;
-  /* discount rate */
-  private double gamma;
-  /* learning rate */
-  private double alpha;
-  /* number of action */
-  private int tmax;
-  /* number of learning */
-  private int epoch;
   /* Q value */
   private double[][] Q; // Q[state][action]
 
   /* constructor */
-  public Agent(Environment env, double gamma, double alpha, int tmax, int epoch){
-    /* set envirionment and parameters */
+  public Agent(Environment env){
+    /* set envirionment, parameters and initialize Q value*/
     this.env = env;
-    this.gamma = gamma;
-    this.alpha = alpha;
-    this.tmax = tmax;
-    this.epoch = epoch;
+    init_Q();
   }
 
   /* learning agent */
-  public void learn(){
-    /* initialize Q value */
-    init_Q();
+  public void learn(int epoch, double epsilon, double gamma, double alpha){
+    /* reward per epoch */
+    int[] rewards = new int[epoch];
+
     /* learn until epoch */
     for(int i = 0; i < epoch; i++){
+      /* total reward */
+      int total_reward = 0;
       /* current state */
-      int state = 0;
+      int state = env.reset();
+
       /* act until TMAX */
-      for(int t = 0; t < tmax; t++){
+      for(int t = 0; t < env.tmax; t++){
         /* choose action */
-        int[] actions = observe_action(state);
+        int[] actions = env.observe_action(state);
         int action = choose_action(actions);
         /* observe next state */
         int next_state = env.observe_state(state, action);
@@ -43,16 +36,21 @@ public abstract class Agent{
         double next_Q_max = max(Q[next_state]);
         /* update Q value */
         Q[state][action] = 
-          (1 -alpha) * Q[state][action] + alpha * (reward + gamma * next_Q_max);
-        /* transition to next state */
-        state = next_state;
+          (1 - alpha) * Q[state][action] + alpha * (reward + gamma * next_Q_max);
+	if(state == env.goal){
+	  /* record total reward */
+	  rewards[epoch] = total_reward; break;
+	} else{
+	  /* transition to next state */
+	  state = next_state;
+	}
       }
     }
   }
   /* initialize Q value */
   private void init_Q(){
-    for(int i = 0; i < env.getS_num(); i++)
-      for(int j = 0; j < env.getA_num(); j++)
+    for(int i = 0; i < env.state_n; i++)
+      for(int j = 0; j < env.action_n; j++)
         Q[i][j] = 0.0;
   }
   /* choose action by epsilon-greedy method */
@@ -67,7 +65,7 @@ public abstract class Agent{
     /* current state */
     int state = 0;
     /* act until TMAX */
-    for(int t = 0; t < tmax; t++){
+    for(int t = 0; t < env.tmax; t++){
       /* choose action */
       int action = argmax(Q[state]);
       /* observe next state */
@@ -88,7 +86,7 @@ public abstract class Agent{
     System.out.println("Q Value");
     for(int i = 0; i < Q.length; i++){
       for(int j = 0; j < Q[i].length; j++)
-        System.out.print(Q[i][j]+" ");
+        System.out.print(Q[i][j] + " ");
       System.out.println();
     }
   }

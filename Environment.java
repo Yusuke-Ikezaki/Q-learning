@@ -1,19 +1,29 @@
 public class Environment{
+  /* number of state */
+  public int state_n;
+  /* number of action */
+  public  int action_n;
+  /* start state */
+  public int start;
+  /* goal state */
+  public int goal;
+  /* time limit */
+  public int tmax;
   /* reward */
   private int[][] r; // r[state][action]
   /* transition probability */
   private double[][] p; // p[state][action]
   /* next state */
   private int[][] t; // t[state][action]
-  /* number of state */
-  private int s_num;
-  /* number of action */
-  private int a_num;
 
   /* constructor */
-  public Environment(int[][] r){
+  public Environment(){
   }
 
+  /* reset environment */
+  public int reset(){
+    return start;
+  }
   /* observe action */
   public int[] observe_action(int state){
     return r[state];
@@ -29,6 +39,6 @@ public class Environment{
     /* success act */
     if(rand < p[state][action]) return t[state][action];
     /* failure act */
-    else return t[state][new java.util.Random().nextInt(a_num)];
+    else return t[state][new java.util.Random().nextInt(action_n)];
   }
 }
